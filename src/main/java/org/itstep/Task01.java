@@ -1,5 +1,6 @@
 package org.itstep;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,16 +46,7 @@ public class Task01 {
 
                     @Override
                     public void execute(String... args) {
-                        for (int i = 0; i < args.length; i++) {
-                            if (!args[i].equals("echo")) {
-                                if (i != args.length - 1) {
-                                    System.out.print(args[i] + " ");
-                                } else {
-                                    System.out.print(args[i]);
-                                }
-                            }
-                        }
-                        System.out.println();
+                        System.out.println(String.join(",", args)); // так краще і коротше
                     }
                 },
                 new Command() {
@@ -86,9 +78,9 @@ public class Task01 {
             System.out.print("Enter operation: ");
             String line = scanner.nextLine();
             for (Command part : commands) {
-                if (line.contains(part.command)) {
+                if (line.startsWith(part.command)) { // краще startsWith
                     String[] array = line.split(" ");
-                    part.execute(array);
+                    part.execute(Arrays.copyOfRange(array, 1, array.length)); // ім'я команди не потрібно передавати
                     break;
                 }
             }
