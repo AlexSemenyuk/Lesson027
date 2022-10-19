@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Java. Lesson027. Task01
- * Command help, echo, now, exit (Без использования Pattern и Matcher)
+ * Java. Lesson027. Task02
+ * Command help, echo, now, exit (C использованием Pattern и Matcher)
  * Semenyuk Alexander
  * Date 19.10.2022
  * Завдання
@@ -17,32 +17,30 @@ import java.util.regex.Pattern;
  * Код повинен бути адаптивним щоб легко було додати нову команду.
  * Дивись приклад з заняття.
  */
-public class Task01 {
+
+public class Task02 {
     public static void main(String[] args) {
-        // Без использования Pattern и Matcher
+        // C использованием Pattern и Matcher
         abstract class Command {
             String command;
 
             abstract void execute(String... args);
         }
 
-        Command[] commands = {
+        Command[] stringСommands = {
                 new Command() {
                     {
                         command = "help";
                     }
-
                     @Override
                     public void execute(String... args) {
                         System.out.println("Help executed");
                     }
                 },
-
                 new Command() {
                     {
                         command = "echo";
                     }
-
                     @Override
                     public void execute(String... args) {
                         for (int i = 0; i < args.length; i++) {
@@ -61,7 +59,6 @@ public class Task01 {
                     {
                         command = "now";
                     }
-
                     @Override
                     public void execute(String... args) {
                         System.out.println(System.currentTimeMillis());
@@ -71,7 +68,6 @@ public class Task01 {
                     {
                         command = "exit";
                     }
-
                     @Override
                     public void execute(String... args) {
                         System.out.println("Goodbye!");
@@ -80,19 +76,28 @@ public class Task01 {
                 }
         };
 
-
         Scanner scanner = new Scanner(System.in);
+        Pattern linePattern = Pattern.compile("(?<text1>[helpnowcxit]*)\s*(?<text2>[A-Za-z]*)*\s*");
         while (true) {
             System.out.print("Enter operation: ");
             String line = scanner.nextLine();
-            for (Command part : commands) {
-                if (line.contains(part.command)) {
-                    String[] array = line.split(" ");
-                    part.execute(array);
-                    break;
-                }
-            }
+            Matcher matcher = linePattern.matcher(line);
+            if (matcher.find()) {
+                String text1 = matcher.group("text1");
+                String text2 = matcher.group("text2");
 
+                for (Command stringСommand : stringСommands) {
+                    if (stringСommand.command.equals(text1)) {
+                        String[] array = line.split(" ");
+                        stringСommand.execute(array);
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("It is wrong format");
+            }
         }
+
+
     }
 }
