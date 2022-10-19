@@ -20,66 +20,76 @@ import java.util.regex.Pattern;
 public class Task01 {
     public static void main(String[] args) {
 
-        abstract class MathOperation {
-            String op;
-            abstract int operation(int a, int b);
+        abstract class Command {
+            String command;
+            abstract void execute (String... args);
         }
 
-        MathOperation[] operations = {
-                new MathOperation() {
+        Command[] commands = {
+                new Command() {
                     {
-                        op = "+";
+                        command = "help";
                     }
                     @Override
-                    int operation(int a, int b) {
-                        return a + b;
+                    public void execute (String... args){
+                        System.out.println("Help executed");
                     }
                 },
 
-                new MathOperation() {
+                new Command() {
                     {
-                        op = "-";
+                        command = "echo";
                     }
                     @Override
-                    int operation(int a, int b) {
-                        return a - b;
+                    public void execute(String... args) {
+                        for (int i = 0; i < args.length; i++) {
+                            if (!args[i].equals("echo")) {
+                                if (i != args.length - 1) {
+                                    System.out.print(args[i] + " ");
+                                } else {
+                                    System.out.print(args[i]);
+                                }
+                            }
+                        }
+                        System.out.println();
                     }
                 },
-
-                new MathOperation() {
+                new Command() {
                     {
-                        op = "*";
+                        command = "now";
                     }
                     @Override
-                    int operation(int a, int b) {
-                        return a * b;
+                    public void execute (String... args){
+                        System.out.println(System.currentTimeMillis());
                     }
                 },
+                new Command() {
+                    {
+                        command = "exit";
+                    }
+                    @Override
+                    public void execute(String... args) {
+                        System.out.println("Goodbye!");
+                        System.exit(0);
+                    }
+                }
         };
 
 
         Scanner scanner = new Scanner(System.in);
-        Pattern mathPattern = Pattern.compile("(?<a>\\d+)\\s*(?<op>[*+-])\\s*(?<b>\\d+)\\s*");
-
         while (true) {
             System.out.print("Enter operation: ");
             String line = scanner.nextLine();
-            Matcher matcher = mathPattern.matcher(line);
 
-            if (matcher.find()) {
-                int a = Integer.parseInt(matcher.group("a"));
-                String op = matcher.group("op");
-                int b = Integer.parseInt(matcher.group("b"));
-                for (MathOperation mathOperation : MathOperation.values()) {
-                    if (mathOperation.op.equals(op)) {
-                        int result = mathOperation.operation(a, b);
-                        System.out.println(" = " + result);
+
+                for (Command part : commands) {
+                    if (line.contains(part.command)){
+                        String[] array = line.split(" ");
+                        part.execute(array);
                         break;
                     }
                 }
-            } else {
-                System.err.println("It is wrong format");
-            }
+
         }
     }
 }
